@@ -68,4 +68,4 @@ def classifyStation(rail_station, date_time):
     return result
 
 
-classifyStation("Zug", "2020-08-01T04:00:00+02:00")
+# classifyStation("Zug", "2020-08-01T04:00:00+02:00")
