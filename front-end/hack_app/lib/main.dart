@@ -1,6 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+//import 'dart:convert';
+//import 'dart:io';
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
@@ -23,6 +26,21 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+class Album {
+  final String userId;
+
+  Album({@required this.userId});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    print("==========");
+    //print(json['userId']);
+    print("==========");
+    //return Album(
+    //userId: json['userId'],
+    //);
+  }
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
@@ -30,6 +48,55 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isVisibleStationSelector = true;
   bool isVisibleDateSelector = false;
   bool isVisibleTimeSelector = false;
+
+  String url = 'localhost:5000  ';
+  //String url_2 = "https://jsonplaceholder.typicode.com/posts";
+
+  void _makeGetRequest() {}
+  Future<Album> fetchAlbum() async {
+    final response = await http.get(Uri.http(url, '/'));
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      print("R===" + response.body);
+      // then parse the JSON.
+      //return Album.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+  /*Future _makeGetRequest() async {
+    var server = await HttpServer.bind(
+      InternetAddress.loopbackIPv4,
+      4040,
+    );
+    print('Listening on localhost:${server.port}');
+
+    await for (HttpRequest request in server) {
+      request.response.write('Hello, world!');
+      await request.response.close();
+    }
+  }*/
+
+  //_makeGetRequest() async {
+  // make request
+  //Uri uri = new Uri.http(url_2,);
+  //Uri uri = Uri.encodeFull(url_2) as Uri;
+  //Response response = await get(uri, headers: {"Accept": "application/js"});
+  //final Map<String, dynamic> activityData = {"Accept": "application/js"};
+
+  //final http.Response response =
+  // await http.post(Uri.encodeFull(url), body: activityData);
+  // sample info available in response
+  //int statusCode = response.statusCode;
+  //Map<String, String> headers = response.headers;
+  //String contentType = headers['content-type'];
+  //String json = response.body;
+
+  // TODO convert json to object...
+  //}
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay picked_s = await showTimePicker(
@@ -123,6 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                 isVisibleStationSelector =
                                     !isVisibleStationSelector;
                                 isVisibleDateSelector = !isVisibleDateSelector;
+                                //_makeGetRequest();
+                                fetchAlbum();
                               });
                             },
                             child: Text('Search')),
