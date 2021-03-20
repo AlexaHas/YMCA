@@ -1,76 +1,139 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool isVisibleStationSelector = true;
-  bool isVisibleDateSelector = false;
-  bool isVisibleTimeSelector = true;
-  DateTime selectedDate = DateTime.now();
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Park+Rail',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Park+Rail'),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              Visibility(
-                visible: isVisibleStationSelector,
-                //maintainState: true,
-                child: Column(
-                  children: [
-                    // Search for Station Input Field
-                    TextField(
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Enter a search term'),
-                    ),
-                    // Submit station input
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            isVisibleStationSelector =
-                                !isVisibleStationSelector;
-                            isVisibleDateSelector = !isVisibleDateSelector;
-                          });
-                        },
-                        child: Text('Search')),
-                  ],
-                ),
+      home: MyHomePage(title: 'Park+Rail'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+
+  bool isVisibleStationSelector = true;
+  bool isVisibleDateSelector = false;
+  bool isVisibleTimeSelector = false;
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay picked_s = await showTimePicker(
+        context: context,
+        initialTime: selectedTime,
+        builder: (BuildContext context, Widget child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+            child: child,
+          );
+        });
+
+    if (picked_s != null && picked_s != selectedTime)
+      setState(() {
+        selectedTime = picked_s;
+      });
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Visibility(
+              visible: isVisibleStationSelector,
+              //maintainState: true,
+              child: Column(
+                children: [
+                  // Search for Station Input Field
+                  TextField(
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Search for a station'),
+                  ),
+                  // Submit station input
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isVisibleStationSelector = !isVisibleStationSelector;
+                          isVisibleDateSelector = !isVisibleDateSelector;
+                        });
+                      },
+                      child: Text('Search')),
+                ],
               ),
-              Visibility(
-                visible: isVisibleDateSelector,
-                child: Column(
-                  children: [
-                    // Show widget for choosing a date
-                    Text('Time picker'),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            isVisibleDateSelector = !isVisibleDateSelector;
-                            showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2001),
-                                lastDate: DateTime(2222));
-                          });
-                        },
-                        child: Text('Go to date')),
-                  ],
-                ),
+            ),
+            Visibility(
+              visible: isVisibleDateSelector,
+              //maintainState: true,
+              child: Column(
+                children: [
+                  // Search for Station Input Field
+                  //Text("${selectedDate.toLocal()}".split(' ')[0]),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _selectDate(context);
+                      isVisibleDateSelector = !isVisibleDateSelector;
+                      isVisibleTimeSelector = !isVisibleTimeSelector;
+                    },
+                    child: Text('Select date'),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Visibility(
+              visible: isVisibleTimeSelector,
+              //maintainState: true,
+              child: Column(
+                children: [
+                  // Search for Station Input Field
+                  //Text("${selectedTime.toLocal()}".split(' ')[0]),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _selectTime(context);
+                    },
+                    child: Text('Select hour'),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
