@@ -53,6 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
   String url = 'localhost:5000  ';
   //String url_2 = "https://jsonplaceholder.typicode.com/posts";
 
+  String choosenStation = "";
+  String choosenDate = "";
+  String choosenTime = "";
+
   Future<Album> fetchAlbum() async {
     final response = await http.get(Uri.http(url, '/'));
 
@@ -65,6 +69,26 @@ class _MyHomePageState extends State<MyHomePage> {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to load album');
+    }
+  }
+
+  Future<void> classifyStation() async {
+    var queryParameters = {
+      "station_name": "Zug",
+      "time": "2020-08-01T04:00:00+02:00",
+    };
+    var requestUri = Uri.http("localhost:5000", '/classify', queryParameters);
+
+    final response = await http.get(requestUri);
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      print("Result of classification: " + response.body);
+      var classificationResult = response.body;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to classify');
     }
   }
 
@@ -159,6 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     !isVisibleStationSelector;
                                 isVisibleDateSelector = !isVisibleDateSelector;
                                 //fetchAlbum();
+                                classifyStation();
                               });
                             },
                             child: Text('Search')),
