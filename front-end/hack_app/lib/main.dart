@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 //import 'dart:convert';
 //import 'dart:io';
-import 'dart:convert';
+import 'dart:io';
 
 void main() => runApp(MyApp());
 
@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Park+Rail',
       home: MyHomePage(title: 'Park+Rail'),
     );
@@ -45,14 +46,13 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
 
-  bool isVisibleStationSelector = true;
+  bool isVisibleStationSelector = false;
   bool isVisibleDateSelector = false;
   bool isVisibleTimeSelector = false;
 
   String url = 'localhost:5000  ';
   //String url_2 = "https://jsonplaceholder.typicode.com/posts";
 
-  void _makeGetRequest() {}
   Future<Album> fetchAlbum() async {
     final response = await http.get(Uri.http(url, '/'));
 
@@ -67,36 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
       throw Exception('Failed to load album');
     }
   }
-  /*Future _makeGetRequest() async {
-    var server = await HttpServer.bind(
-      InternetAddress.loopbackIPv4,
-      4040,
-    );
-    print('Listening on localhost:${server.port}');
-
-    await for (HttpRequest request in server) {
-      request.response.write('Hello, world!');
-      await request.response.close();
-    }
-  }*/
-
-  //_makeGetRequest() async {
-  // make request
-  //Uri uri = new Uri.http(url_2,);
-  //Uri uri = Uri.encodeFull(url_2) as Uri;
-  //Response response = await get(uri, headers: {"Accept": "application/js"});
-  //final Map<String, dynamic> activityData = {"Accept": "application/js"};
-
-  //final http.Response response =
-  // await http.post(Uri.encodeFull(url), body: activityData);
-  // sample info available in response
-  //int statusCode = response.statusCode;
-  //Map<String, String> headers = response.headers;
-  //String contentType = headers['content-type'];
-  //String json = response.body;
-
-  // TODO convert json to object...
-  //}
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay picked_s = await showTimePicker(
@@ -127,142 +97,170 @@ class _MyHomePageState extends State<MyHomePage> {
       });
   }
 
+  Future<void> fetchUserOrder() {
+    // Imagine that this function is fetching user info from another service or database.
+    return Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        isVisibleStationSelector = true;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    fetchUserOrder();
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Text(widget.title),
-      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              child: Column(
-                children: [
-                  Visibility(
-                    visible: isVisibleStationSelector,
-                    //maintainState: true,
-                    child: Column(
-                      children: [
-                        new SizedBox(
-                          width: 10.0,
-                          height: 70.0,
-                        ),
-                        // Search for Station Input Field
-                        new SizedBox(
-                          width: 300.0,
-                          height: 200.0,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: Colors.redAccent,
+            Visibility(
+              visible: !isVisibleStationSelector,
+              //maintainState: true,
+              child: Container(
+                child: Image(image: AssetImage('assets/logo.png')),
+                height: height,
+                width: width,
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 235, 0, 0),
+                  shape: BoxShape.rectangle,
+                ),
+              ),
+            ),
+            Visibility(
+              visible: isVisibleStationSelector,
+              //maintainState: true,
+              child: Container(
+                child: Column(
+                  children: [
+                    Visibility(
+                      visible: isVisibleStationSelector,
+                      //maintainState: true,
+                      child: Column(
+                        children: [
+                          new SizedBox(
+                            width: 10.0,
+                            height: 70.0,
+                          ),
+                          // Search for Station Input Field
+                          new SizedBox(
+                            width: 300.0,
+                            height: 200.0,
+                            child: TextField(
+                              decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.redAccent,
+                                  ),
                                 ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 2.0,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                    width: 2.0,
+                                  ),
                                 ),
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 15.0, horizontal: 10.0),
+                                //const EdgeInsets.all(8.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                ),
+                                hintText: 'Search for a station',
                               ),
-                              contentPadding: new EdgeInsets.symmetric(
-                                  vertical: 15.0, horizontal: 10.0),
-                              //const EdgeInsets.all(8.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              hintText: 'Search for a station',
                             ),
                           ),
-                        ),
-                        // Submit station input
-                        ElevatedButton(
+                          // Submit station input
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red, // background
+                                onPrimary: Colors.white, // foreground
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  isVisibleStationSelector =
+                                      !isVisibleStationSelector;
+                                  isVisibleDateSelector =
+                                      !isVisibleDateSelector;
+                                  //_makeGetRequest();
+                                  fetchAlbum();
+                                });
+                              },
+                              child: Text('Search')),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                      visible: isVisibleDateSelector,
+                      //maintainState: true,
+                      child: Column(
+                        children: [
+                          // Search for Station Input Field
+                          //Text("${selectedDate.toLocal()}".split(' ')[0]),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               primary: Colors.red, // background
                               onPrimary: Colors.white, // foreground
                             ),
                             onPressed: () {
-                              setState(() {
-                                isVisibleStationSelector =
-                                    !isVisibleStationSelector;
-                                isVisibleDateSelector = !isVisibleDateSelector;
-                                //_makeGetRequest();
-                                fetchAlbum();
-                              });
+                              _selectDate(context);
+                              isVisibleDateSelector = !isVisibleDateSelector;
+                              isVisibleTimeSelector = !isVisibleTimeSelector;
                             },
-                            child: Text('Search')),
-                      ],
-                    ),
-                  ),
-                  Visibility(
-                    visible: isVisibleDateSelector,
-                    //maintainState: true,
-                    child: Column(
-                      children: [
-                        // Search for Station Input Field
-                        //Text("${selectedDate.toLocal()}".split(' ')[0]),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
+                            child: Text('Select date'),
                           ),
-                          onPressed: () {
-                            _selectDate(context);
-                            isVisibleDateSelector = !isVisibleDateSelector;
-                            isVisibleTimeSelector = !isVisibleTimeSelector;
-                          },
-                          child: Text('Select date'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Visibility(
-                    visible: isVisibleTimeSelector,
-                    //maintainState: true,
-                    child: Column(
-                      children: [
-                        // Search for Station Input Field
-                        //Text("${selectedTime.toLocal()}".split(' ')[0]),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
+                    Visibility(
+                      visible: isVisibleTimeSelector,
+                      //maintainState: true,
+                      child: Column(
+                        children: [
+                          // Search for Station Input Field
+                          //Text("${selectedTime.toLocal()}".split(' ')[0]),
+                          SizedBox(
+                            height: 20.0,
                           ),
-                          onPressed: () {
-                            _selectTime(context);
-                          },
-                          child: Text('Select hour'),
-                        ),
-                      ],
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red, // background
+                              onPrimary: Colors.white, // foreground
+                            ),
+                            onPressed: () {
+                              _selectTime(context);
+                            },
+                            child: Text('Select hour'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                height: 450.0,
+                width: 350.0,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.rectangle,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: const Offset(1.0, 1.0),
+                        blurRadius: 1.0,
+                        spreadRadius: 0.5,
+                      ),
+                    ]),
               ),
-              height: 450.0,
-              width: 350.0,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(1.0, 1.0),
-                      blurRadius: 1.0,
-                      spreadRadius: 0.5,
-                    ),
-                  ]),
-            ),
+            )
           ],
         ),
       ),
