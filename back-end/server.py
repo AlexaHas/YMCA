@@ -21,7 +21,7 @@ def testForHolidy(day, month):
         return 0
 
 def classifyStation(rail_station, date_time):
-    station_list = pd.read_excel("C:/Users/Yannik/Documents/Hackerthon/Start Hack 2021/Data/train_stations_clean.xlsx")
+    station_list = pd.read_excel("../resources//train_stations_clean.xlsx")
     input_data = pd.DataFrame(station_list.loc[station_list["station"] == rail_station, "station_code"], columns=["station_code"]).reset_index(drop=True)
     time = pd.to_datetime(date_time).hour
     week_of_year = pd.to_datetime(date_time).weekofyear
@@ -55,7 +55,7 @@ def classifyStation(rail_station, date_time):
     print(input_data.columns)
 
     # load model
-    file_path = "C:/Users/Yannik/Documents/Hackerthon/Start Hack 2021/Data/"
+    file_path = "../resources/"
     model_name = "Neural Network"
 
     # Load model from file
@@ -67,4 +67,5 @@ def classifyStation(rail_station, date_time):
     print("Result:", result)
     return result
 
-classifyStation("Zug","2020-08-01T04:00:00+02:00")
+
+classifyStation("Zug", "2020-08-01T04:00:00+02:00")
