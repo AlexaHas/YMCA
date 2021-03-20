@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
       "station_name": "Zug",
       "time": "2020-08-01T04:00:00+02:00",
     };
-    var requestUri = Uri.http("localhost:5000", '/classify', queryParameters);
+    var requestUri = Uri.http(url, '/classify', queryParameters);
 
     final response = await http.get(requestUri);
 
@@ -89,6 +89,25 @@ class _MyHomePageState extends State<MyHomePage> {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to classify');
+    }
+  }
+
+  Future<void> searchStation() async {
+    var queryParameters = {
+      "searchTerm": "Ba",
+    };
+    var requestUri = Uri.http(url, '/search', queryParameters);
+
+    final response = await http.get(requestUri);
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      print("Result of search: " + response.body);
+      var searchResult = response.body;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed search');
     }
   }
 
@@ -183,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     !isVisibleStationSelector;
                                 isVisibleDateSelector = !isVisibleDateSelector;
                                 //fetchAlbum();
-                                classifyStation();
+                                searchStation(); // TODO handle response
                               });
                             },
                             child: Text('Search')),
@@ -232,6 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           onPressed: () {
                             _selectTime(context);
+                            classifyStation(); // TODO: update to include parameters and handle response
                           },
                           child: Text('Select hour'),
                         ),
