@@ -1,30 +1,51 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 
-import 'package:hack_app/main.dart';
+void main() => runApp(DatePickerTask());
 
-void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+class DatePickerTask extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        floatingActionButton: Theme(
+          data: Theme.of(context).copyWith(
+            primaryColor: Colors.amber,
+          ),
+          child: Builder(
+            builder: (c) => FloatingActionButton(
+                child: Icon(Icons.date_range),
+                onPressed: () => _handleDatePicker(c)),
+          ),
+        ),
+        appBar: AppBar(title: Text('Date Picker Example')),
+        body: Center(
+            child: Builder(
+          builder: (con) => RaisedButton(
+            textColor: Theme.of(context).accentTextTheme.display1.color,
+            color: Theme.of(context).primaryColor,
+            child: Text('Choose a starting date'),
+            onPressed: () => showDatePicker(
+              context: con,
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now().subtract(Duration(days: 30)),
+              lastDate: DateTime.now().add(Duration(days: 30)),
+            ),
+          ),
+        )),
+      ),
+    );
+  }
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  Future<Null> _handleDatePicker(BuildContext floatContext) async {
+    final dateResult = await showDatePicker(
+        context: floatContext,
+        firstDate: DateTime.now(),
+        initialDate: DateTime.now().subtract(Duration(days: 30)),
+        lastDate: DateTime.now().add(Duration(days: 60)));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+    //prints the chosen date from the picker
+    print(dateResult);
+  }
 }
