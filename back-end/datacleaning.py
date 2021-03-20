@@ -44,6 +44,12 @@ station_ocr_data["day"] = station_ocr_data["date"].apply(lambda x: pd.to_datetim
 station_ocr_data["workday"] = station_ocr_data["date"].apply(lambda x: 1 if pd.to_datetime(x).weekday() < 5 else 0) # weekday returns 0 = Monday to 6 = Sunday -> used to test for work days
 station_ocr_data["holiday"] = station_ocr_data["date"].apply(lambda x: testForHolidy(pd.to_datetime(x).day, pd.to_datetime(x).month))
 
+station_ocr_data.drop("date", axis=1, inplace=True)
+
+clean_data = station_ocr_data.copy()
+
+clean_data.to_csv("C:/Users/Yannik/Documents/Hackerthon/Start Hack 2021/Data/clean_data.csv", index=False)
+
 
 
 
