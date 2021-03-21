@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 //import 'dart:convert';
 //import 'dart:io';
 import 'dart:io';
+import 'package:shape_of_view/shape_of_view.dart';
 
 void main() => runApp(MyApp());
 
@@ -103,136 +104,197 @@ class _MyHomePageState extends State<MyHomePage> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        body: Center(
+      child: Stack(children: <Widget>[
+        Column(
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Container(
-              child: Column(
-                children: [
-                  Visibility(
-                    visible: isVisibleStationSelector,
-                    child: Column(
-                      children: [
-                        new SizedBox(
-                          width: 10.0,
-                          height: 70.0,
-                        ),
-                        // Search for Station Input Field
-                        new SizedBox(
-                          width: 300.0,
-                          height: 200.0,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: Colors.redAccent,
-                                ),
+            Stack(
+              overflow: Overflow.visible,
+              children: <Widget>[
+                ShapeOfView(
+                  elevation: 50,
+                  height: 350,
+                  shape: DiagonalShape(
+                      position: DiagonalPosition.Bottom,
+                      direction: DiagonalDirection.Right,
+                      angle: DiagonalAngle.deg(angle: 10)),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.rectangle,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 20,
+                  child: Column(
+                    children: [
+                      /*Text(
+                        'P+Rail',
+                        style: new TextStyle(
+                            color: Colors.black, backgroundColor: Colors.black),
+                      ),*/
+                      new SizedBox(
+                        /*child: Text(
+                          "P+Rail",
+                          style:
+                              TextStyle(color: Colors.black.withOpacity(1.0)),
+                        ),*/
+                        width: 100.0,
+                        height: 200.0,
+                      ),
+                      Container(
+                        child: Column(
+                          children: [
+                            Visibility(
+                              visible: isVisibleStationSelector,
+                              child: Column(
+                                children: [
+                                  new SizedBox(
+                                    width: 10.0,
+                                    height: 70.0,
+                                  ),
+                                  // Search for Station Input Field
+                                  new SizedBox(
+                                    width: 300.0,
+                                    height: 200.0,
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.redAccent,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.red,
+                                            width: 2.0,
+                                          ),
+                                        ),
+                                        contentPadding:
+                                            new EdgeInsets.symmetric(
+                                                vertical: 15.0,
+                                                horizontal: 10.0),
+                                        //const EdgeInsets.all(8.0),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                        ),
+                                        hintText: 'Search for a station',
+                                      ),
+                                    ),
+                                  ),
+                                  // Submit station input
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.red, // background
+                                        onPrimary: Colors.white, // foreground
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          isVisibleStationSelector =
+                                              !isVisibleStationSelector;
+                                          isVisibleDateSelector =
+                                              !isVisibleDateSelector;
+                                          //fetchAlbum();
+                                        });
+                                      },
+                                      child: Text('Search')),
+                                ],
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                  width: 2.0,
-                                ),
-                              ),
-                              contentPadding: new EdgeInsets.symmetric(
-                                  vertical: 15.0, horizontal: 10.0),
-                              //const EdgeInsets.all(8.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              hintText: 'Search for a station',
                             ),
-                          ),
-                        ),
-                        // Submit station input
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red, // background
-                              onPrimary: Colors.white, // foreground
+                            Visibility(
+                              visible: isVisibleDateSelector,
+                              //maintainState: true,
+                              child: Column(
+                                children: [
+                                  // Search for Station Input Field
+                                  //Text("${selectedDate.toLocal()}".split(' ')[0]),
+                                  SizedBox(
+                                    height: 20.0,
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.red, // background
+                                      onPrimary: Colors.white, // foreground
+                                    ),
+                                    onPressed: () {
+                                      _selectDate(context);
+                                      isVisibleDateSelector =
+                                          !isVisibleDateSelector;
+                                      isVisibleTimeSelector =
+                                          !isVisibleTimeSelector;
+                                    },
+                                    child: Text('Select date'),
+                                  ),
+                                ],
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                isVisibleStationSelector =
-                                    !isVisibleStationSelector;
-                                isVisibleDateSelector = !isVisibleDateSelector;
-                                //fetchAlbum();
-                              });
-                            },
-                            child: Text('Search')),
-                      ],
-                    ),
+                            Visibility(
+                              visible: isVisibleTimeSelector,
+                              //maintainState: true,
+                              child: Column(
+                                children: [
+                                  // Search for Station Input Field
+                                  //Text("${selectedTime.toLocal()}".split(' ')[0]),
+                                  SizedBox(
+                                    height: 20.0,
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.red, // background
+                                      onPrimary: Colors.white, // foreground
+                                    ),
+                                    onPressed: () {
+                                      _selectTime(context);
+                                      isVisibleTimeSelector = false;
+                                    },
+                                    child: Text('Select hour'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        height: 450.0,
+                        width: 350.0,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.rectangle,
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: const Offset(1.0, 1.0),
+                                blurRadius: 1.0,
+                                spreadRadius: 0.5,
+                              ),
+                            ]),
+                      )
+                    ],
                   ),
-                  Visibility(
-                    visible: isVisibleDateSelector,
-                    //maintainState: true,
-                    child: Column(
-                      children: [
-                        // Search for Station Input Field
-                        //Text("${selectedDate.toLocal()}".split(' ')[0]),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () {
-                            _selectDate(context);
-                            isVisibleDateSelector = !isVisibleDateSelector;
-                            isVisibleTimeSelector = !isVisibleTimeSelector;
-                          },
-                          child: Text('Select date'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Visibility(
-                    visible: isVisibleTimeSelector,
-                    //maintainState: true,
-                    child: Column(
-                      children: [
-                        // Search for Station Input Field
-                        //Text("${selectedTime.toLocal()}".split(' ')[0]),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
-                            onPrimary: Colors.white, // foreground
-                          ),
-                          onPressed: () {
-                            _selectTime(context);
-                          },
-                          child: Text('Select hour'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              height: 450.0,
-              width: 350.0,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(1.0, 1.0),
-                      blurRadius: 1.0,
-                      spreadRadius: 0.5,
-                    ),
-                  ]),
-            )
+                ),
+              ],
+            ),
+            /*Stack(
+              children: [Text('data'), Text('aasd')],
+            ),*/
+            /*ShapeOfView(
+              elevation: 10,
+              height: 300,
+              shape: DiagonalShape(
+                  position: DiagonalPosition.Bottom,
+                  direction: DiagonalDirection.Right,
+                  angle: DiagonalAngle.deg(angle: 10)),
+            ),*/
           ],
         ),
-      ),
-    );
+      ]),
+    ));
   }
 }
