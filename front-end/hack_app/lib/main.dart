@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String output = "test";
 
-  //bool gotIT = false;
+  Color theme = Color.fromARGB(255, 235, 0, 0);
 
   String url = 'localhost:5000  ';
   //String url_2 = "https://jsonplaceholder.typicode.com/posts";
@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 angle: DiagonalAngle.deg(angle: 10)),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: theme,
                 shape: BoxShape.rectangle,
               ),
             ),
@@ -287,13 +287,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide(
-                                color: Colors.redAccent,
+                                color: theme,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide(
-                                color: Colors.red,
+                                color: theme,
                                 width: 2.0,
                               ),
                             ),
@@ -310,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       // Submit station input
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.red, // background
+                            primary: theme,
                             onPrimary: Colors.white, // foreground
                           ),
                           onPressed: () {
@@ -340,7 +340,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red, // background
+                          primary: theme, // background
                           onPrimary: Colors.white, // foreground
                         ),
                         onPressed: () {
@@ -378,7 +378,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red, // background
+                          primary: theme, // background
                           onPrimary: Colors.white, // foreground
                         ),
                         onPressed: () {
@@ -414,7 +414,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red, // background
+                          primary: theme, // background
                           onPrimary: Colors.white, // foreground
                         ),
                         onPressed: () {
